@@ -9,6 +9,7 @@ class Node {
 class BinarySearchTree {
     constructor (array) {
         array = array.sort((a, b) => (a - b));
+        console.log(array)
         this.root = this.buildTree(array, 0, array.length - 1);
     }
 
@@ -24,37 +25,36 @@ class BinarySearchTree {
         return node;
     }
 
-    insert(val, rootNode = this.root) {
+    insertNode(val, rootNode = this.root) {
         if (rootNode === null) {
             return new Node(val);
         }
         if (val < rootNode.data) {
-            rootNode.left = this.insert(val, rootNode.left)
+            rootNode.left = this.insertNode(val, rootNode.left)
         } else if (val > rootNode.data) {
-            rootNode.right = this.insert(val, rootNode.right)
+            rootNode.right = this.insertNode(val, rootNode.right)
         }
         console.log(rootNode);
         return rootNode;
     }
 
-    delete(val, rootNode = this.root) {
+    deleteNode(val, rootNode = this.root) {
         if (rootNode === null) {
             return rootNode;
         }
 
         if (val < rootNode.data) {
-            rootNode.left = this.delete(val, rootNode.left);
+            rootNode.left = this.deleteNode(val, rootNode.left);
         } else if (val > rootNode.data) {
-            rootNode.right = this.delete(val, rootNode.right);
+            rootNode.right = this.deleteNode(val, rootNode.right);
         } else {
-            console.log(rootNode);
             if (rootNode.left === null) {
                 return rootNode.right;
             } else if (rootNode.right === null) {
                 return rootNode.left;
             }
             rootNode.data = this.minValue(rootNode.right);
-            rootNode.right = this.delete(rootNode.data, rootNode.right)
+            rootNode.right = this.deleteNode(rootNode.data, rootNode.right)
         }
         return rootNode;
     }
@@ -99,13 +99,72 @@ class BinarySearchTree {
         return answer;
     }
 
-    inOrder() {
+    inOrder(fnc) {
+        function traverse(rootNode, result = []) {
+            if (rootNode === null) return;
 
+            traverse(rootNode.left, result);
+            
+            if (fnc) {
+                fnc(rootNode);
+            } else {
+                result.push(rootNode.data);
+            }
+
+            traverse(rootNode.right, result);
+
+            return result;
+        }
+
+        return traverse(this.root);
     }
 
-    preOrder() {}
+    preOrder(fnc) {
+        function traverse(rootNode, result = []) {
+            if (rootNode === null) return;
 
-    postOrder() {};
+            if (fnc) {
+                fnc(rootNode);
+            } else {
+                result.push(rootNode.data);
+            }
+
+            traverse(rootNode.left, result);
+            traverse(rootNode.right, result);
+
+            return result;
+        }
+
+        return traverse(this.root);
+    }
+
+
+    postOrder(fnc) {
+        function traverse(rootNode, result = []) {
+            if (rootNode === null) return;
+
+            traverse(rootNode.left, result);
+
+            traverse(rootNode.right, result);
+
+            if (fnc) {
+                fnc(rootNode);
+            } else {
+                result.push(rootNode.data);
+            }
+            return result;
+        }
+
+        return traverse(this.root);
+    };
+
+    height() {};
+    
+    depth() {};
+
+    isBalanced() {};
+
+    rebalance() {};
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -121,7 +180,7 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
     }
 };
 
-let example = [1, 7, 4, 23, 8, 12, 13, 3, 5, 11, 9, 67, 6345, 324];
+let example = [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15];
 
 let bst = new BinarySearchTree(example);
 // prettyPrint(bst.root);
@@ -134,3 +193,6 @@ let bst = new BinarySearchTree(example);
 // bst.levelOrder(node => {
 //     console.log(node.data);
 // })
+console.log( bst.inOrder() )
+console.log( bst.postOrder() )
+console.log( bst.preOrder() )
