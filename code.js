@@ -9,7 +9,6 @@ class Node {
 class BinarySearchTree {
     constructor (array) {
         array = array.sort((a, b) => (a - b));
-        console.log(array)
         this.root = this.buildTree(array, 0, array.length - 1);
     }
 
@@ -34,7 +33,6 @@ class BinarySearchTree {
         } else if (val > rootNode.data) {
             rootNode.right = this.insertNode(val, rootNode.right)
         }
-        console.log(rootNode);
         return rootNode;
     }
 
@@ -166,11 +164,37 @@ class BinarySearchTree {
         return Math.max(leftHeight, rightHeight) + 1;
     };
     
-    depth() {};
+    depth(node, rootN = this.root, lvl = 0) {
+        if (rootN === null) return -1;
+        if (node === null) return -1;
+        if (rootN === node) return lvl;
 
-    isBalanced() {};
+        let leftD = this.depth(node, rootN.left, lvl + 1)
+        let rightD = this.depth(node, rootN.right, lvl + 1)
+        return Math.max(leftD,rightD);
+    }
+    
+    
 
-    rebalance() {};
+    isBalanced(rootNode = this.root) {
+        if (rootNode === null) return true;
+        if (
+            Math.abs(this.height(rootNode.left) - this.height(rootNode.right)) <= 1 &&
+            this.isBalanced(rootNode.left) === true &&
+            this.isBalanced(rootNode.right) === true) {
+                return true;
+            } else {
+                return false;
+            }
+    };
+
+    rebalance() {
+        if (this.isBalanced === true) {
+            return;
+        }
+        let arr = this.inOrder();
+        return this.root = this.root = this.buildTree(arr, 0, arr.length - 1);
+    };
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -190,16 +214,46 @@ let example = [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15];
 
 let bst = new BinarySearchTree(example);
 prettyPrint(bst.root);
-// bst.insert(24);
+// bst.insertNode(24);
 // prettyPrint(bst.root);
-// bst.delete(4);
+// bst.deleteNode(4);
 // prettyPrint(bst.root);
 // prettyPrint(bst.find(67));
 // console.log(bst.levelOrder())
 // bst.levelOrder(node => {
 //     console.log(node.data);
 // })
-console.log( bst.inOrder() )
-console.log( bst.postOrder() )
-console.log( bst.preOrder() )
-console.log( bst.height() );
+// console.log( bst.inOrder() )
+// console.log( bst.postOrder() )
+// console.log( bst.preOrder() )
+// console.log( bst.height() );
+// console.log( bst.find(5) )
+// console.log( bst.depth( bst.find(5) ));
+// console.log( bst.isBalanced());
+// bst.insertNode(24);
+// bst.insertNode(25);
+// bst.insertNode(26);
+// bst.insertNode(27);
+// prettyPrint(bst.root);
+// console.log( bst.isBalanced());
+// bst.rebalance();
+// prettyPrint(bst.root);
+
+const randomArray = Array.from({ length: 21 }, () => Math.floor(Math.random() * 40));
+const newTree = new BinarySearchTree(randomArray);
+console.log('new Tree initialized')
+console.log('is the new Tree balanced? ' + newTree.isBalanced());
+console.log('preOrder data: ' + newTree.preOrder());
+console.log('inOrder data: ' + newTree.inOrder());
+console.log('postOrder data: ' + newTree.postOrder());
+console.log('unbalancing the tree...(adding numbers 100, 101, 102)');
+newTree.insertNode(100);
+newTree.insertNode(101);
+newTree.insertNode(102);
+console.log('is the Tree balanced? ' + newTree.isBalanced());
+console.log('reBalancing the Tree');
+newTree.rebalance();
+console.log('is the updated Tree balanced? ' + newTree.isBalanced());
+console.log('updated preOrder data: ' + newTree.preOrder());
+console.log('updated inOrder data: ' + newTree.inOrder());
+console.log('updated postOrder data: ' + newTree.postOrder());
