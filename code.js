@@ -158,7 +158,13 @@ class BinarySearchTree {
         return traverse(this.root);
     };
 
-    height() {};
+    height(rootNode = this.root) {
+        if (rootNode === null) return -1;
+        const leftHeight = this.height(rootNode.left);
+        const rightHeight = this.height(rootNode.right);
+
+        return Math.max(leftHeight, rightHeight) + 1;
+    };
     
     depth() {};
 
@@ -183,7 +189,7 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 let example = [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15];
 
 let bst = new BinarySearchTree(example);
-// prettyPrint(bst.root);
+prettyPrint(bst.root);
 // bst.insert(24);
 // prettyPrint(bst.root);
 // bst.delete(4);
@@ -196,3 +202,4 @@ let bst = new BinarySearchTree(example);
 console.log( bst.inOrder() )
 console.log( bst.postOrder() )
 console.log( bst.preOrder() )
+console.log( bst.height() );
